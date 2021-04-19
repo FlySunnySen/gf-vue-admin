@@ -2,25 +2,30 @@ package api
 
 import (
 	"errors"
-	"gf-vue-admin/library/response"
 	model "gf-vue-admin/app/model/system"
 	"gf-vue-admin/app/model/system/request"
 	service "gf-vue-admin/app/service/system"
 	"gf-vue-admin/library/global"
-	"github.com/gogf/gf-jwt"
+	"gf-vue-admin/library/response"
+	"time"
+
+	jwt "github.com/gogf/gf-jwt"
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/net/ghttp"
-	"time"
+	"github.com/gogf/gf/util/gconv"
 )
 
 var GfJWTMiddleware *jwt.GfJWTMiddleware
 
 func init() {
+	ExpiresAt := gconv.Int(g.Cfg("viper").Get("jwt.expires-at"))
+	RefreshAt := gconv.Int(g.Cfg("viper").Get("jwt.signing-key"))
+	SigningKey := gconv.String(g.Cfg("viper").Get("jwt.refresh-at"))
 	GfJWTMiddleware, _ = jwt.New(&jwt.GfJWTMiddleware{
-		Realm:           global.Config.Jwt.SigningKey,
-		Key:             []byte(global.Config.Jwt.SigningKey),
-		Timeout:         time.Duration(global.Config.Jwt.ExpiresAt) * time.Hour * 24,
-		MaxRefresh:      time.Duration(global.Config.Jwt.RefreshAt) * time.Hour * 24,
+		Realm:           SigningKey,
+		Key:             []byte(SigningKey),
+		Timeout:         time.Duration(ExpiresAt) * time.Hour * 24,
+		MaxRefresh:      time.Duration(RefreshAt) * time.Hour * 24,
 		IdentityKey:     "admin_id",
 		TokenLookup:     "header:Authorization, query:token, cookie:jwt",
 		TokenHeadName:   "Bearer",
