@@ -19,8 +19,8 @@ var GfJWTMiddleware *jwt.GfJWTMiddleware
 
 func init() {
 	ExpiresAt := gconv.Int(g.Cfg("viper").Get("jwt.expires-at"))
-	RefreshAt := gconv.Int(g.Cfg("viper").Get("jwt.signing-key"))
-	SigningKey := gconv.String(g.Cfg("viper").Get("jwt.refresh-at"))
+	RefreshAt := gconv.Int(g.Cfg("viper").Get("jwt.refresh-at"))
+	SigningKey := gconv.String(g.Cfg("viper").Get("jwt.signing-key"))
 	GfJWTMiddleware, _ = jwt.New(&jwt.GfJWTMiddleware{
 		Realm:           SigningKey,
 		Key:             []byte(SigningKey),
